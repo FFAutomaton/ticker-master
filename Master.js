@@ -16,8 +16,13 @@ module.exports = class Master {
 
     async writeToFile(symbol_name, data, tickSize, fileUpdateTs) {
         let filePath = `data/${symbol_name}_${Constants.TICKERDURATION}_${EasyHelpers.countDecimals(tickSize)}_${fileUpdateTs}.csv`
-        let prevFilePath = `data/${symbol_name}_${Constants.TICKERDURATION}_${EasyHelpers.countDecimals(tickSize)}_${fileUpdateTs - Constants.TICKERDURATION * 60 * 1000}.csv`
-        fs.unlinkSync(prevFilePath);
+        try {
+            let prevFilePath = `data/${symbol_name}_${Constants.TICKERDURATION}_${EasyHelpers.countDecimals(tickSize)}_${fileUpdateTs - Constants.TICKERDURATION * 60 * 1000}.csv`
+            fs.unlinkSync(prevFilePath);
+        } catch (error) {
+            console.log("No file to delete continue");
+        }
+        
 
         const csvWriter = createCsvWriter({
             path: filePath,
