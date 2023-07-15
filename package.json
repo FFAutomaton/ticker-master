@@ -1,0 +1,25 @@
+{
+  "name": "FFAutomaton-ticker-master",
+  "version": "1.0.0",
+  "description": "Candle data collector",
+  "main": "main.js",
+  "dependencies": {
+    "csv-writer": "^1.6.0",
+    "lodash": "*",
+    "mathjs": "^7.0.1",
+    "ws": "^7.3.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FFAutomaton/ticker-master.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FFAutomaton/ticker-master/issues"
+  },
+  "homepage": "https://github.com/FFAutomaton"
+}
