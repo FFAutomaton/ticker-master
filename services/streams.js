@@ -2,11 +2,14 @@ const WebSocket = require('ws');
 const Constants = require('../constants');
 const Binance = require('../services/binance')
 const { ATR } = require('../brain/indicators')
+const os = require('os');
 
 
 module.exports = class Streams {
     static combinedKline() {
         let newRow = undefined
+        // TODO: add candle data into the file
+        // TODO: trigger turtle on some conditions
         console.log('Main setupCombinedKlineStream started!');
         let streamUrl = '';
         const selectedSymbols = this.symbols;
@@ -33,17 +36,20 @@ module.exports = class Streams {
                     }
                     newRow = [myEvent.data.k.t, myEvent.data.k.o, myEvent.data.k.h, myEvent.data.k.l, myEvent.data.k.c, myEvent.data.k.v, myEvent.data.k.T];
                     thisKline[thisKline.length - 1] = newRow;
-                    // var date = new Date(myEvent.data.k.T).toISOString();
-                    // console.log('in the if ' + date + " " + myEvent.data.k.c)
+
                 } else {
+                    let already_working_traders = await this.read_already_working_traders();
+                    
                     let this_price = thisKline[thisKline.length - 1][4]
                     newRow = [myEvent.data.k.t, myEvent.data.k.o, myEvent.data.k.h, myEvent.data.k.l, myEvent.data.k.c, myEvent.data.k.v, myEvent.data.k.T];
-                    thisKline.push(newRow);
                     this.ATR_5m = ATR(Constants.atrWindow, thisKline, this.Stocks[symbol_name].tickSize)
                     let ratio = (this.ATR_5m.slice(-1) / parseFloat(this_price)) * (10000 / 31)
-                    if (ratio > Constants.volatilityThreshold) {
-                        await this.writeToFile(symbol_name, this.ATR_5m, this.Stocks[symbol_name].tickSize, myEvent.data.k.t - (Constants.TICKERDURATION * 60 * 1000));
+
+                    if (ratio > Constants.volatilityThreshold || already_working_traders.includes(symbol_name)) {
+                        this.writeToFile(symbol_name, this.ATR_5m, thisKline, this.Stocks[symbol_name].quantityPrecision, myEvent.data.k.t - (Constants.TICKERDURATION * 60 * 1000));
+                        console.log(os.freemem() / os.totalmem());
                     }
+                    thisKline.push(newRow);
 
                 }
                 this.Klines.set(symbol_name, thisKline);
@@ -55,6 +61,7 @@ module.exports = class Streams {
                         this.IsStreamReady = true;
                     }
                     let difference = this.symbols.filter(x => !Array.from(this.Klines.keys()).includes(x.symbol));
+                    
                     console.log('difference: ' + difference.length);
                 }
             }
@@ -86,4 +93,5 @@ module.exports = class Streams {
             // console.log(`Master setupCombinedKlineStream ping geldi pong gonderdik!`);
         });
     }
+
 }

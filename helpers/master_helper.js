@@ -40,6 +40,7 @@ exports.filterSymbolsToKeyValue = (symbols) => {
             "avgPriceMins": symbols[i].filters[1].multiplierUp,
             "multiplierDown": symbols[i].filters[1].multiplierUp,
             "multiplierUp": symbols[i].filters[1].multiplierUp,
+            "quantityPrecision": symbols[i].quantityPrecision,
         }
     }
     return Stocks;

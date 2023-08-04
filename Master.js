@@ -14,10 +14,22 @@ module.exports = class Master {
         }
     }
 
-    async writeToFile(symbol_name, data, tickSize, fileUpdateTs) {
-        let filePath = `data/${symbol_name}_${Constants.TICKERDURATION}_${EasyHelpers.countDecimals(tickSize)}_${fileUpdateTs}.csv`
+    async read_already_working_traders() {
+        let already_working_traders = []
         try {
-            let prevFilePath = `data/${symbol_name}_${Constants.TICKERDURATION}_${EasyHelpers.countDecimals(tickSize)}_${fileUpdateTs - Constants.TICKERDURATION * 60 * 1000}.csv`
+            already_working_traders = fs.readFileSync('./working_traders.json', 'utf8')
+            already_working_traders = JSON.parse(already_working_traders);
+        } catch {
+            already_working_traders = []
+        }
+        
+        return already_working_traders;
+    }
+
+    async writeToFile(symbol_name, data, candleData, quantityPrecision, fileUpdateTs) {
+        let filePath = `data/${fileUpdateTs}_${Constants.TICKERDURATION}_${quantityPrecision}_${symbol_name}`
+        try {
+            let prevFilePath = `data/${fileUpdateTs - 2 * Constants.TICKERDURATION * 60 * 1000}_${Constants.TICKERDURATION}_${quantityPrecision}_${symbol_name}`
             fs.unlinkSync(prevFilePath);
         } catch (error) {
             console.log("No file to delete continue");
@@ -26,12 +38,18 @@ module.exports = class Master {
 
         const csvWriter = createCsvWriter({
             path: filePath,
-            header: ["atr"]
+            header: ["atr"].concat(Constants.csvHeader)
         });
-        data = data.filter(function () { return true; });
+        // data = data.filter(function () { return true; });
         data = data.map(item => [item])
+        let tmp_data = []
+        for (let i=0; i<data.length; i++) {
+            if (data[i] != undefined) {
+                tmp_data.push(data[i].concat(candleData[i]))
+            }
+        }
 
-        csvWriter.writeRecords(data)
+        csvWriter.writeRecords(tmp_data)
             .then(() => {
                 console.log(`${symbol_name}...Done`);
             });
