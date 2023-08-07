@@ -1,12 +1,12 @@
 module.exports = {
     TICKERDURATION: 5,
-    volatilityThreshold: 0,
+    volatilityThreshold: 3,
     csvHeader: ["open_ts", "open", "high", "low", "close", "volume", "close_ts"],
     // csvHeader: ["atr"],
     debugBTC: "USDT",
     upDown: ["UPUSDT", "DOWNUSDT"],
     // debugSymbols: ["LINKUSDT", "ALGOUSDT", "XRPUSDT"],
-    debugSymbols: ["LINKUSDT"],
+    debugSymbols: ["YGGUSDT"],
     // debugSymbols: [], // if empty it will get all pairs from exchangeInfo
     discardAssets: [
         "BTCDOM", "USDC", "SRM", "BTS", "T", "FTT", "SSV",
