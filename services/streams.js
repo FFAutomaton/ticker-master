@@ -45,7 +45,7 @@ module.exports = class Streams {
                     this.ATR_5m = ATR(Constants.atrWindow, thisKline, this.Stocks[symbol_name].tickSize)
                     let ratio = (this.ATR_5m.slice(-1) / parseFloat(this_price)) * (10000 / 31)
 
-                    if (ratio > Constants.volatilityThreshold || already_working_traders.includes(symbol_name)) {
+                    if (ratio > Constants.volatilityThreshold || already_working_traders.includes(symbol_name) || Constants.debugSymbols.includes(symbol_name)) {
                         this.writeToFile(symbol_name, this.ATR_5m, thisKline, this.Stocks[symbol_name].quantityPrecision, myEvent.data.k.t - (Constants.TICKERDURATION * 60 * 1000));
                         console.log(os.freemem() / os.totalmem());
                     }
