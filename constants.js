@@ -6,7 +6,7 @@ module.exports = {
     debugBTC: "USDT",
     upDown: ["UPUSDT", "DOWNUSDT"],
     // debugSymbols: ["LINKUSDT", "ALGOUSDT", "XRPUSDT"],
-    debugSymbols: ["OXTUSDT"],
+    debugSymbols: ["BLZUSDT"],
     // debugSymbols: [], // if empty it will get all pairs from exchangeInfo
     discardAssets: [
         "BTCDOM", "USDC", "SRM", "BTS", "T", "FTT", "SSV",
@@ -21,4 +21,4 @@ module.exports = {
     volumePlace: 5,
 
     kCount: 100,
- };
+};
